@@ -4,12 +4,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+    
+    <meta name="description" content="HIIT Interval Timer for workouts">    
+    <meta name="theme-color" content="#FFFFFF"/>
+    
     <link rel="manifest" href="manifest.json" />
     <link rel="shortcut icon" type="image/png" href="images/icons/192.png"/>
-    
-    <meta name="description" content="Hex game for wev dev 12">
-    
-    <meta name="theme-color" content="#FFFFFF"/>
     <link rel="apple-touch-icon" href="images/icons/192.png">
     
     <title>HIIT Training</title>
@@ -26,25 +26,36 @@
 
   </head>
   <body>
-    <div id="alert">
-      Please fill out every field before beginning your workout
-      <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
-    </div>
-    
     <div class="container" id="grid">
+      <h1 class="display-1 text-center">Workout</h1>
+      <p class="text-center">Create and run a HIIT interval timer! All durations are in seconds.</p>
       <div class="row py-3">
-      <!-- <div class="form-floating">
-          <select id="presets" class="form-select form-control" aria-label="presets">
-            <option selected>30-30</option>
-            <option value="1">One</option>
-            <option value="2">Two</option>
-            <option value="3">Three</option>
-          </select>
-          <label for="presets">Presets (doesnt work yet)</label>
-        </div> -->
-        
+        <div class="col mt-2 mb-2">
+          <div class="form-floating">
+              <select id="presets" class="form-select form-control" aria-label="presets">
+                <option selected>30-30</option>
+                <option value="1">One</option>
+                <option value="2">Two</option>
+                <option value="3">Three</option>
+              </select>
+              <label for="presets">Presets (doesnt work yet)</label>
+            </div>
+        </div>
+        <div class="col mt-2 mb-2">
+        <div class="form-floating">
+            <select id="sound" class="form-select form-control" aria-label="sound">
+              <option selected>Alarm</option>
+              <option value="chimes">One</option>
+              <option value="2">Two</option>
+              <option value="3">Three</option>
+            </select>
+            <label for="sound">Sound doesn't work yet</label>
+          </div>
+        </div>
+      </div>
+      <div class="row py-3">
         <div class="form-floating mt-4 mb-4">
-          <input type="text" class="form-control maininput" id="timerName" placeholder="My Timer">
+          <input type="text" class="form-control" id="timerName" placeholder="My Timer">
           <label for="timerName">Timer Name</label>
         </div>
 
@@ -55,37 +66,28 @@
         
         <div class="form-floating mt-4 mb-4">
           <input class="form-control maininput" type="number" placeholder="30" id="countdown" name="countdown" min="1" max="300">
-          <label for="countdown">Countdown to begin (seconds)</label>
+          <label for="countdown">Countdown to begin</label>
         </div>
-
-       <!-- <div class="form-floating">
-          <select id="sound" class="form-select form-control" aria-label="sound">
-            <option selected>Alarm</option>
-            <option value="chimes">One</option>
-            <option value="2">Two</option>
-            <option value="3">Three</option>
-          </select>
-          <label for="sound">Sound doesn't work yet</label>
-        </div> -->
       </div>
+      
       <div class="row py-3">
-        <div class="col mt-2 mb-2">
+        <div class="col mt-2 mb-2" id="h-intensity">
           <h1>High Intensity</h1>
           <div class="form-floating mt-4 mb-4">
             <input class="form-control maininput" type="number" placeholder="30" id="highDuration" name="highIntensityDuration" min="1" max="">
-            <label for="highDuration">Duration (seconds)</label>
+            <label for="highDuration">Duration</label>
           </div>
           
-          <div class="form-floating" mt-4 mb-4>
-            <input type="text" class="form-control maininput" id="highName" placeholder="High Intensity">
+          <div class="form-floating mt-4 mb-4">
+            <input type="text" class="form-control" id="highName" placeholder="High Intensity">
             <label for="highName">Name</label>
           </div>
         </div>
-        <div class="col mt-2 mb-2">
+        <div class="col mt-2 mb-2" id="c-intensity">
           <h1>Low Intensity</h1>
           <div class="form-floating mt-4 mb-4">
             <input class="form-control maininput" type="number" placeholder="30" id="lowDuration" name="LowIntensityDuration" min="1" max="">
-            <label for="lowDuration">Duration (seconds)</label>
+            <label for="lowDuration">Duration</label>
           </div>
           
           <div class="form-floating mt-4 mb-4">
@@ -97,33 +99,45 @@
       
       <div class="row py-3">
         <div class="col mt-2 mb-2" >
-          <button onclick="calculateWorkout(document.getElementById('addProgress'))" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">Add custom interval</button>
+          <button onclick="calculateWorkout(document.getElementById('addProgress'))" type="button" class="btn btn-lg" data-bs-toggle="modal" data-bs-target="#addModal">Add custom interval</button>
+        </div>
+        <div class="col mt-2 mb-2" >
           <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#removeModal">Remove custom intervals</button>
-          <br><br>
+        </div>
+      </div>
+       <div class="row py-3">
+        <div class="col mt-2 mb-2" >
           <input class="form-check-input" type="checkbox" value="" id="warmup" onclick="showDuration(this, 'warmupCont')" checked>
           <label class="form-check-label" for="warmup">Include warm-up</label>
-          <div class="form-floating mt-4 mb-4" id="warmupCont">
+          <div class="form-floating mt-1" id="warmupCont">
             <input class="form-control" type="number" placeholder="30" id="warmupDuration" name="warmupDuration" min="1" max="">
-            <label for="warmupDuration">Duration (seconds)</label>
+            <label for="warmupDuration">Duration</label>
           </div>
-          <br>
+        </div>
+        <div class="col mt-2 mb-2" >
           <input class="form-check-input" type="checkbox" value="" id="cooldown" onclick="showDuration(this, 'cooldownCont')" checked>
           <label class="form-check-label" for="cooldown">Include cooldown</label>
-          <div class="form-floating mt-4 mb-4" id="cooldownCont">
+          <div class="form-floating mt-1" id="cooldownCont">
             <input class="form-control" type="number" placeholder="30" id="cooldownDuration" name="cooldownDuration" min="1" max="">
-            <label for="cooldownDuration">Duration (seconds)</label>
+            <label for="cooldownDuration">Duration</label>
           </div>
         </div>
       </div>
       
       <div class="row py-3">
         <div class="col mt-2 mb-2">
-          <label id="forPreview" for="preview">Total time:</label>
+          <label id="forPreview" for="preview"><b>Total time: </b><br>Hover over or click the intervals below to view their details</label>
            <div id="preview" class="progress">
             </div>
         </div>
       </div>
+      
       <div class="row py-3">
+        <div id="alert">
+          Please fill out every number field before beginning your workout
+          <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+        </div>
+        
         <button class="btn btn-success" onclick="beginTimer()">Begin Workout</button>
       </div>
     </div>
@@ -143,7 +157,7 @@
             
             <div class="form-floating mt-4 mb-4">
               <input class="form-control" type="number" placeholder="30" id="newDuration" name="customIntervalDuration" min="1" max="">
-              <label for="newDuration">Duration (seconds)</label>
+              <label for="newDuration">Duration</label>
             </div>
             <div id="draggable"><span id="start">Start</span></div>
             <div id="addProgress" class="progress">
