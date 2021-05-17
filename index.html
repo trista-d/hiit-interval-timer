@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="https://glitch.com/favicon.ico" />
+
+    <title>HIIT Training</title>
+    
+    <link rel="stylesheet" href="style.css" />
+
+    <script src="script.js" defer></script>
+    
+   <!-- bootstrap -->
+   <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css" as="style" onload="this.onload=null;this.rel='stylesheet'"> 
+   <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0/dist/css/bootstrap.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    
+   <script src="https://code.jquery.com/jquery-3.6.0.min.js" crossorigin="anonymous"></script>
+   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0/dist/js/bootstrap.bundle.min.js" defer></script>
+
+  </head>
+  <body>
+    <div id="alert">
+      Please fill out every field before beginning your workout
+      <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+    </div>
+    
+    <div class="container" id="grid">
+      <div class="row py-3">
+      <!-- <div class="form-floating">
+          <select id="presets" class="form-select form-control" aria-label="presets">
+            <option selected>30-30</option>
+            <option value="1">One</option>
+            <option value="2">Two</option>
+            <option value="3">Three</option>
+          </select>
+          <label for="presets">Presets (doesnt work yet)</label>
+        </div> -->
+        
+        <div class="form-floating mt-4 mb-4">
+          <input type="text" class="form-control maininput" id="timerName" placeholder="My Timer">
+          <label for="timerName">Timer Name</label>
+        </div>
+
+        <div class="form-floating mt-4 mb-4">
+          <input class="form-control maininput" type="number" id="rounds" name="rounds" min="1" max="50" placeholder="5">
+          <label for="rounds">Rounds</label>
+        </div>
+        
+        <div class="form-floating mt-4 mb-4">
+          <input class="form-control maininput" type="number" placeholder="30" id="countdown" name="countdown" min="1" max="300">
+          <label for="countdown">Countdown to begin (seconds)</label>
+        </div>
+
+       <!-- <div class="form-floating">
+          <select id="sound" class="form-select form-control" aria-label="sound">
+            <option selected>Alarm</option>
+            <option value="chimes">One</option>
+            <option value="2">Two</option>
+            <option value="3">Three</option>
+          </select>
+          <label for="sound">Sound doesn't work yet</label>
+        </div> -->
+      </div>
+      <div class="row py-3">
+        <div class="col mt-2 mb-2">
+          <h1>High Intensity</h1>
+          <div class="form-floating mt-4 mb-4">
+            <input class="form-control maininput" type="number" placeholder="30" id="highDuration" name="highIntensityDuration" min="1" max="">
+            <label for="highDuration">Duration (seconds)</label>
+          </div>
+          
+          <div class="form-floating" mt-4 mb-4>
+            <input type="text" class="form-control maininput" id="highName" placeholder="High Intensity">
+            <label for="highName">Name</label>
+          </div>
+        </div>
+        <div class="col mt-2 mb-2">
+          <h1>Low Intensity</h1>
+          <div class="form-floating mt-4 mb-4">
+            <input class="form-control maininput" type="number" placeholder="30" id="lowDuration" name="LowIntensityDuration" min="1" max="">
+            <label for="lowDuration">Duration (seconds)</label>
+          </div>
+          
+          <div class="form-floating mt-4 mb-4">
+            <input type="text" class="form-control" id="lowName" placeholder="Low Intensity">
+            <label for="lowName">Name</label>
+          </div>
+        </div>
+      </div>
+      
+      <div class="row py-3">
+        <div class="col mt-2 mb-2" >
+          <button onclick="calculateWorkout(document.getElementById('addProgress'))" type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">Add custom interval</button>
+          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#removeModal">Remove custom intervals</button>
+          <br><br>
+          <input class="form-check-input" type="checkbox" value="" id="warmup" onclick="showDuration(this, 'warmupCont')" checked>
+          <label class="form-check-label" for="warmup">Include warm-up</label>
+          <div class="form-floating mt-4 mb-4" id="warmupCont">
+            <input class="form-control" type="number" placeholder="30" id="warmupDuration" name="warmupDuration" min="1" max="">
+            <label for="warmupDuration">Duration (seconds)</label>
+          </div>
+          <br>
+          <input class="form-check-input" type="checkbox" value="" id="cooldown" onclick="showDuration(this, 'cooldownCont')" checked>
+          <label class="form-check-label" for="cooldown">Include cooldown</label>
+          <div class="form-floating mt-4 mb-4" id="cooldownCont">
+            <input class="form-control" type="number" placeholder="30" id="cooldownDuration" name="cooldownDuration" min="1" max="">
+            <label for="cooldownDuration">Duration (seconds)</label>
+          </div>
+        </div>
+      </div>
+      
+      <div class="row py-3">
+        <div class="col mt-2 mb-2">
+          <label id="forPreview" for="preview">Total time:</label>
+           <div id="preview" class="progress">
+            </div>
+        </div>
+      </div>
+      <div class="row py-3">
+        <button class="btn btn-success" onclick="beginTimer()">Begin Workout</button>
+      </div>
+    </div>
+    
+    <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">New Custom Interval</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="form-floating mt-4 mb-4">
+              <input type="text" class="form-control" id="newName" placeholder="High Intensity">
+              <label for="newName">Name</label>
+            </div>
+            
+            <div class="form-floating mt-4 mb-4">
+              <input class="form-control" type="number" placeholder="30" id="newDuration" name="customIntervalDuration" min="1" max="">
+              <label for="newDuration">Duration (seconds)</label>
+            </div>
+            <div id="draggable"><span id="start">Start</span></div>
+            <div id="addProgress" class="progress">
+              
+            </div>
+          </div> <!-- modal-body -->
+          <div class="modal-footer">
+            <button onclick="addCustom()" type="button" class="btn btn-primary" data-bs-dismiss="modal">Save</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    
+    <div class="modal fade" id="removeModal" tabindex="-1" aria-labelledby="" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="removeModalLabel">Delete Custom Intervals</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body" id="removeBody">
+            
+          </div> <!-- modal-body -->
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="removeCustom()">Delete selected</button>
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="deleteAll()">Delete all</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

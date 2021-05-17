@@ -1,0 +1,42 @@
+{
+"theme_color" : "#fff",
+"background_color" : "#fff",
+"display" : "standalone",
+"scope" : "/",
+"start_url" : "/",
+"name" : "HIIT Interval Timer",
+"short_name" : "HIIT Training",
+"description" : "Plan and do your HIIT workout",
+"icons": [
+    {
+      "src": "images/icons/hex192.png",
+      "sizes": "192x192",
+	  "purpose": "maskable"
+    },
+    {
+      "src": "images/icons/hex512.png",
+      "sizes": "512x512",
+	  "purpose": "maskable"
+    },
+  
+  {
+      "src": "images/icons/hex256.png",
+      "sizes": "256x256",
+	  "purpose": "maskable"
+    },
+  
+  {
+      "src": "images/icons/hex384.png",
+      "sizes": "384x384", 
+	  "purpose": "maskable"
+    },
+  
+  {
+      "src": "images/icons/hex144.png",
+      "sizes": "144x144", 
+      "purpose": "any"
+  }
+ 
+  ]
+
+}
