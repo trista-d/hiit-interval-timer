@@ -9,33 +9,27 @@
 "description" : "Plan and do your HIIT workout",
 "icons": [
     {
-      "src": "images/icons/hex192.png",
+      "src": "images/icons/192.png",
       "sizes": "192x192",
-	  "purpose": "maskable"
+	  "purpose": "any"
     },
     {
-      "src": "images/icons/hex512.png",
+      "src": "images/icons/512.png",
       "sizes": "512x512",
 	  "purpose": "maskable"
     },
   
   {
-      "src": "images/icons/hex256.png",
+      "src": "images/icons/256.png",
       "sizes": "256x256",
 	  "purpose": "maskable"
     },
   
   {
-      "src": "images/icons/hex384.png",
+      "src": "images/icons/384.png",
       "sizes": "384x384", 
 	  "purpose": "maskable"
-    },
-  
-  {
-      "src": "images/icons/hex144.png",
-      "sizes": "144x144", 
-      "purpose": "any"
-  }
+    }
  
   ]
 
