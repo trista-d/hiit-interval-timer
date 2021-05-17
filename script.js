@@ -18,11 +18,15 @@ let numCustoms = 0; // number of custom intervals the user has added
 window.onload = function() {
   dragElement(document.getElementById("draggable"));
   
-  document.getElementById('grid').addEventListener('change', function(event) {
+  document.getElementById('grid').addEventListener('input', function(event) {
+    
+    // close any open popovers to avoid stacking them 
+    $("[data-bs-toggle='popover']").popover('hide');
     
     // get current workout values  
     getInputs();
     
+    // re-calculate the workout preview bar
     calculateWorkout(document.getElementById("preview"));
   });
 }
@@ -41,10 +45,11 @@ function dragElement(elmnt) {
     // get the mouse cursor position at startup:
     pos3 = e.clientX;
 
+    // caculate the slider's ending position when the slider stops being dragged
     document.onmouseup = closeDragElement;
     elmnt.ontouchend = closeDragElement;
     
-    // call a function whenever the cursor moves:
+    // calculate slider position whenever the mouse moves
     document.onmousemove = elementDrag;  
   }
 
@@ -76,12 +81,13 @@ function dragElement(elmnt) {
     let sum = 0; // position in progress bar
     
     let differenceA = 0;
-    let differenceB = Math.abs(elmnt.style.left.replace("px", "") - sum);;
+    let differenceB = Math.abs(elmnt.style.left.replace("px", "") - sum);
     
     let left = 0; // pixel position to set slider at
     
     start = 0;
     
+    // find which interval gap the slider is closest to
     for (let i = 0; i < positions.length; i++) {
       sum += positions[i].offsetWidth;
       
@@ -100,9 +106,11 @@ function dragElement(elmnt) {
     if (left == 0) {
       left = 15;
     }
+    
+    // 'snap' the slider to the nearest interval gap
     elmnt.style.left = left + "px";
 
-    // stop moving when mouse button is released:
+    // stop moving the slider
     document.onmouseup = null;
     document.onmousemove = null;    
   } // closeDragElement
@@ -122,6 +130,12 @@ async function beginTimer() {
 
   getInputs();
   
+      // run through each interval
+    for (let time in workoutTimes) {
+      if (workoutTimes[time] == "" || workoutTimes[time] == "0") {
+        delete workoutTimes[time];
+      } // if
+    } // for
   // add warmup and cooldown if user has checked box
   if (workoutNames.warmup == "") {
     workoutTimes.warmup = 0;
@@ -139,8 +153,6 @@ async function beginTimer() {
   
   // run the timer for the correct number of rounds
   //for (let j = 0; j < workoutNames.rounds; j++) {
-    
-    // run through each interval
     for (let time in workoutTimes) {
       timer = workoutTimes[time];
       
@@ -218,7 +230,7 @@ function calculateWorkout(bar) {
   // get total workout time
   calcTotal();
   
-  document.getElementById("forPreview").innerHTML = "Total time: " + total + " seconds";
+  document.getElementById("forPreview").innerHTML = "<b>Total time: " + total + " seconds</b><br>Hover over or click the intervals below to view their details";
   
   //for (let i = 0; i < workoutNames.rounds; i++) {
     for (let time in workoutTimes) {
@@ -427,3 +439,4 @@ function deleteAll() {
 // pause button
 // add preset values
 // validate HTML and CSS
+// rounds need to update on input change so calcuation isn't wrong
