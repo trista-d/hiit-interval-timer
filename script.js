@@ -423,8 +423,7 @@ function deleteAll() {
 
 // add touchevents for slider
 // better workout screen 
-// optimize pwa
 // better workout finish screen
 // pause button
-// get pwa icons
+// add preset values
 // validate HTML and CSS
