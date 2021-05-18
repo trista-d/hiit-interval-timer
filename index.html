@@ -7,6 +7,7 @@
     
     <meta name="description" content="HIIT Interval Timer for workouts">    
     <meta name="theme-color" content="#FFFFFF"/>
+    <meta http-equiv="Cache-control" content="no-cache">
     
     <link rel="manifest" href="manifest.json" />
     <link rel="shortcut icon" type="image/png" href="images/icons/192.png"/>
@@ -28,17 +29,18 @@
   <body>
     <div class="container" id="grid">
       <h1 class="display-1 text-center">Workout</h1>
-      <p class="text-center">Create and run a HIIT interval timer! All durations are in seconds.</p>
+      <p class="text-center">Create and run a HIIT interval timer! The preset options in the menu below are just a small sample of possible workouts, 
+        so feel free to experiment with your own customizations. All durations are in <b>seconds</b>.</p>
       <div class="row py-3">
         <div class="col mt-2 mb-2">
           <div class="form-floating">
-              <select id="presets" class="form-select form-control" aria-label="presets">
-                <option selected>30-30</option>
-                <option value="1">One</option>
-                <option value="2">Two</option>
-                <option value="3">Three</option>
+              <select onchange="setPresets(this.value)" onmousedown="this.selectedIndex = 3" id="presets" class="form-select form-control" aria-label="presets">
+                <option value="0">1-to-3</option>
+                <option value="1">1-to-1</option>
+                <option value="2">2-to-1</option>
+                <option value="3" selected>None</option>
               </select>
-              <label for="presets">Presets (doesnt work yet)</label>
+              <label for="presets">Presets</label>
             </div>
         </div>
         <div class="col mt-2 mb-2">
