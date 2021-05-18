@@ -8,7 +8,8 @@ let customTimes = {}; // object containg user-submitted custom interval duration
 let customNames = {}; // object containg user-submitted custom interval names
 let startPos = {} // object contaning which index of the progress bar each custom interval starts at
 
-let toRemove = []  // checkboxes of custom intervals (used in deleting them)
+let toRemove = [];  // checkboxes of custom intervals (used in deleting them)
+let sounds = new Array(3); // all sound files
 
 let supportsTouch = 'ontouchstart' in window || navigator.msMaxTouchPoints; // check to see if slider needs to be touch compatible
 let total = 0; // total workout time in seconds
@@ -20,6 +21,11 @@ let t = 0; // seconds to decrement in the timer
 window.onload = function() {
   dragElement(document.getElementById("draggable"));
   
+  // load audio files
+  for (let i = 0; i < sounds.length; i++) {
+    sounds[i] = new Audio("sounds/" + i + ".wav");
+  } // for
+  console.log(sounds);
   document.getElementById('grid').addEventListener('change', function(event) {
 
     
@@ -535,10 +541,11 @@ function setPresets(i) {
   document.getElementById("removeBody").innerHTML = "";
 } // setPresets
 
+function playSound(value) {
+  
+} // playSound
+
 
 // nicer workout screen 
 // nicer workout finish screen
-// pause button
-// add preset values
 // validate HTML and CSS
-// rounds need to update on input change so calcuation isn't wrong
