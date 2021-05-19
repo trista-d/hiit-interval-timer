@@ -7,11 +7,12 @@ let workoutTimes = {}; // object containing user-submitted workout durations
 let customTimes = {}; // object containg user-submitted custom interval durations
 let customNames = {}; // object containg user-submitted custom interval names
 let startPos = {} // object contaning which index of the progress bar each custom interval starts at
-
+let audio = -1; // index of "sounds" array to play
+let supportsTouch = 'ontouchstart' in window || navigator.msMaxTouchPoints; // check to see if slider needs to be touch compatible
+ 
 let toRemove = [];  // checkboxes of custom intervals (used in deleting them)
 let sounds = new Array(3); // all sound files
 
-let supportsTouch = 'ontouchstart' in window || navigator.msMaxTouchPoints; // check to see if slider needs to be touch compatible
 let total = 0; // total workout time in seconds
 let start = 0; // which interval gap to start the custom interval in 
 let numCustoms = 0; // number of custom intervals the user has added
@@ -25,7 +26,6 @@ window.onload = function() {
   for (let i = 0; i < sounds.length; i++) {
     sounds[i] = new Audio("sounds/" + i + ".wav");
   } // for
-  console.log(sounds);
   document.getElementById('grid').addEventListener('change', function(event) {
 
     
@@ -37,7 +37,7 @@ window.onload = function() {
     
     // re-calculate the workout preview bar
     calculateWorkout(document.getElementById("preview"));
-  });
+  }, {passive: true});
 }
 
 // handle custom interval slider
@@ -46,11 +46,11 @@ function dragElement(elmnt) {
   let bar = document.getElementById("addProgress"); // container element for progress bar sections
   
   elmnt.onmousedown = dragMouseDown;
-  elmnt.ontouchstart = dragMouseDown;
+  elmnt.addEventListener('touchstart', dragMouseDown, {passive: true});
   
   function dragMouseDown(e) {
     e = e || window.event;
-   // e.preventDefault();
+    e.preventDefault();
     
     // get the mouse cursor position at startup:
     if (supportsTouch) {
@@ -125,6 +125,8 @@ function dragElement(elmnt) {
 
     if (left == 0) {
       left = 15;
+    } else {
+      left += 4.5;
     }
     
     // 'snap' the slider to the nearest interval gap
@@ -151,6 +153,7 @@ async function beginTimer() {
     }
   } // for
 
+  // save user input values
   getInputs();
   
       // run through each interval
@@ -170,7 +173,7 @@ async function beginTimer() {
  
   // remove timer set up screen and show timer
   if (t == 0) {
-    document.body.innerHTML = '<h3>' + workoutNames.timerName + '</h3><div id="container"><h1 id="name">' + workoutNames.timerName + '</h1><div id="timer"></div><button onclick="pausePlay()" id="pause" class="btn btn-secondary">Pause</button></div>';
+    document.body.innerHTML = '<h3 class="display-1 text-center" id="timerName">' + workoutNames.timerName + '</h3><div id="container"><p id="name" class="display-3">' + workoutNames.timerName + '</p><div id="timer"></div><button onclick="pausePlay()" id="pause" class="btn btn-lg">Pause</button>'+'</div>';
   } // if
     
   let timer = 0, minutes, seconds;
@@ -180,43 +183,51 @@ async function beginTimer() {
     for (let time in workoutTimes) {
       timer = workoutTimes[time];
 
-      
-     let title = document.getElementById("name");
-     let bg = document.getElementById("container"); 
-
+     // detach incremented number from key name
      let timeSuffix = time.substring(time.indexOf('_') + 1);
-     switch(true) {
+     
+      // display correct background color
+      switch(true) {
         case timeSuffix == 'high':
-          bg.style.backgroundColor = "#d9534f";
+          document.body.style.backgroundColor = "#d9534f";
           name.innerHTML = workoutNames[time];
           break;
         case timeSuffix == 'low':
-          bg.style.backgroundColor = "#5cb85c";
+          document.body.style.backgroundColor = "#5cb85c";
           name.innerHTML = workoutNames[time];
           break;
         case time == 'countdown':
-          bg.style.backgroundColor = "#0275d8";
+          document.body.style.backgroundColor = "#0275d8";
           name.innerHTML = workoutNames.countdown;
           break;    
        case time == 'warmup':
-          bg.style.backgroundColor = "#f0ad4e";
+          document.body.style.backgroundColor = "#f0ad4e";
           name.innerHTML = "Warmup";
           break;
        case time == 'cooldown':
-          bg.style.backgroundColor = "#f0ad4e";
+          document.body.style.backgroundColor = "#f0ad4e";
           name.innerHTML ="Cooldown";
           break;
        default:  
-         bg.style.backgroundColor = "#6f42c1";
+         document.body.style.backgroundColor = "#6f42c1";
          name.innerHTML = workoutNames[time];
-      }
-        await showTimer(timer, time);
+      } // switch
+      
+      // play timer audio at start of each interval (except countdown)
+      if (audio < 3) {
+        sounds[audio].playbackRate = 2;
+        sounds[audio].play();
+      } // if
+      
+    // wait for the timer to tick down to zero before running the loop again
+    await showTimer(timer, time);
     } // for
-  //}
   
-  document.body.innerHTML = "<h1>Congratulations! Workout finished</h1>";
+  document.body.style.backgroundColor = "#fff";
+  document.body.innerHTML = '<div class="mx-auto text-center"><h1 class="mx-auto text-center" id="congrats">Congratulations,</h1><p class="display-3 mx-auto text-center" id="finished">Workout finished!</p><button class="btn mx-auto text-center" id="newWorkout" onclick="location.reload()">New Workout</button></div>';
 } // beginTimer
 
+// grpahically and mathematically decrement the timer in seconds 
 let showTimer = async function showTimer(timer, time) {
   t = timer;  
   
@@ -225,8 +236,8 @@ let showTimer = async function showTimer(timer, time) {
       await new Promise(r => setTimeout(r, 500));
       continue;
     }
-  let    minutes = parseInt(t / 60, 10)
-  let    seconds = parseInt(t % 60, 10);
+    let minutes = parseInt(t / 60, 10)
+    let seconds = parseInt(t % 60, 10);
 
     minutes = minutes < 10 ? "0" + minutes : minutes;
     seconds = seconds < 10 ? "0" + seconds : seconds;
@@ -258,25 +269,15 @@ function calculateWorkout(bar) {
   // get total workout time
   calcTotal();
   
+  // display total seconds of workout
   document.getElementById("forPreview").innerHTML = "<b>Total time: " + total + " seconds</b><br>Hover over or click the intervals below to view their details";
   
-  //for (let i = 0; i < workoutNames.rounds; i++) {
     for (let time in workoutTimes) {
       if (time != "countdown" && workoutTimes[time] != "") {
-/*      
-      // don't show warmup and cooldown during middle rounds
-      if (i > 0 && time == "warmup") {
-        continue;
-      } else if (i != workoutNames.rounds - 1 && time == "cooldown") {
-        continue;
-      } // else
+
+        let interval = document.createElement('DIV'); // interval to go on progress bar
         
-      if (i != workoutNames.rounds -1 && time.includes("custom")) {
-        continue;
-      } // else
-  */      
-        let interval = document.createElement('DIV');
-        
+        // add popup window on hover or click of interval on progress bar
         interval.setAttribute("data-bs-toggle", "popover");
         interval.setAttribute("data-bs-placement", "top");
         interval.setAttribute("data-bs-trigger", "hover");
@@ -286,6 +287,7 @@ function calculateWorkout(bar) {
         
         let timeSuffix = time.substring(time.indexOf('_') + 1);
         
+        // if user doesn't set name, use generic name for popup
         if (workoutNames[time] == "") {
           interval.setAttribute("title", timeSuffix + " intensity");
         } else {
@@ -294,8 +296,10 @@ function calculateWorkout(bar) {
         
         interval.setAttribute("data-bs-content", workoutTimes[time] + " seconds");
           
+        // calculate what fraction of 
         interval.style.width = (workoutTimes[time] / total * 100)  + "%";
 
+        // display correct progress bar color for each interval
         switch(true) {
           case time == "warmup":
             interval.style.backgroundColor = "#f0ad4e";
@@ -316,11 +320,7 @@ function calculateWorkout(bar) {
         
         interval.setAttribute("class", "progress-bar");
 
-/*        if (i == workoutNames.rounds - 1 && time.includes("custom")) {   
-          bar.insertBefore(interval, bar.children[startPos[time]]);
-        } else {
-  */        bar.appendChild(interval);
-    //    } // else
+        bar.appendChild(interval);
         
         // initialize bootstrap popovers
         $('[data-bs-toggle="popover"]').popover();
@@ -336,10 +336,11 @@ function showDuration(checkbox, id) {
     elem.style.display = "block";
   } else {
     elem.style.display = "none";
-    document.getElementById(checkbox.id + "Duration").value = 0;
+    document.getElementById(checkbox.id + "Duration").value = "";
   } // else
   
   // update progress bar
+  getInputs();
   calculateWorkout(document.getElementById("preview"));
 } // showDuration
 
@@ -347,19 +348,8 @@ function showDuration(checkbox, id) {
 function calcTotal() {
   total = 0;
   
-  // sum workoutTimes
-//  for (let i = 0; i < workoutNames.rounds; i++) {
-    for (let time in workoutTimes) {
-/*      if (i > 0 && time == "warmup") {
-        continue;
-      } else if (i != workoutNames.rounds - 1 && time == "cooldown") {
-        continue;
-      } else if (time == "countdown") {
-        continue;
-      } else if (i > 0 && time.includes('custom')) {
-        continue;
-      } // if
-*/      
+  // sum workoutTimes but exclude countdown
+    for (let time in workoutTimes) {    
       if (workoutTimes[time] == "" || time == "countdown") {
         continue;
       }
@@ -372,29 +362,21 @@ function calcTotal() {
 function getInputs() {
   // Clear out any extra intervals (in case # of rounds has been reduced)
   let newRounds = document.getElementById("rounds").value;
-  
-  // If there's no rounds, then nothing to do
-  if (newRounds == "" || newRounds == "0") {
-    return;
+  if (newRounds == "") {
+    newRounds = 0;
   }
-  
-  console.log("newRounds: " + newRounds);
-  console.log("workoutNames['rounds']: " + workoutNames['rounds']);
-  console.log("lastRounds:" + lastRounds);
   if (parseInt(lastRounds) > parseInt(newRounds)) {
     let key = newRounds + '_high';
-    console.log('key: ' + key);
     let keyValues = Object.entries(workoutTimes);
-    console.log(keyValues);
     let index = keyValues.findIndex(x => x[0] == key);
-    console.log("index: " + index);
     if (index > -1) {
-      console.log("Found key, deleting items");
       keyValues.splice(index);
       workoutTimes = Object.fromEntries(keyValues);
     }
-    console.log(workoutTimes);
-  }
+  } // if
+   
+  // get index of audio to use in workout
+  audio = document.getElementById("sound").value;
   
   workoutNames ['timerName'] = document.getElementById("timerName").value;
   workoutNames ['rounds'] = document.getElementById("rounds").value;
@@ -405,8 +387,10 @@ function getInputs() {
   workoutTimes ['countdown'] = document.getElementById("countdown").value;
   workoutTimes ['warmup'] = document.getElementById("warmupDuration").value;
   
+  // delete cooldown so it will stay last in the object
   delete workoutTimes['cooldown'];
   
+  // save the correct number interval based on how many rounds the user has set
   for (let i = 0; i < document.getElementById("rounds").value; i++) {
     workoutNames [i + '_high'] = document.getElementById("highName").value;
     workoutNames [i + '_low'] = document.getElementById("lowName").value;
@@ -416,8 +400,10 @@ function getInputs() {
   workoutTimes ['cooldown'] = document.getElementById("cooldownDuration").value;
   
   lastRounds = newRounds;
+  
 } // getInputs
-// add custom interval
+
+// create custom interval
 function addCustom() {
   numCustoms++;
   
@@ -441,6 +427,7 @@ function addCustom() {
   
   let name = 'custom' + numCustoms;
   
+  // create checkbox for the "remove intervals" screen
   let container = document.createElement('DIV');
   let modal = document.getElementById("removeBody");   
   modal.appendChild(container);
@@ -457,6 +444,7 @@ function addCustom() {
   
   toRemove.push(document.getElementById('custom' + numCustoms));
   
+  // re-caclulate workout preview
   calculateWorkout(document.getElementById("preview"));
   
   // clear modal inputs
@@ -475,6 +463,7 @@ function removeCustom() {
     } // if
   } // for
   
+  // re-caclulate workout preview
   calculateWorkout(document.getElementById("preview"));
 } // removeCustom
 
@@ -487,11 +476,18 @@ function deleteAll() {
     toRemove[i].parentNode.remove();
   } // for
   
+  // re-caclulate workout preview
   calculateWorkout(document.getElementById("preview"));
 } // deleteAll
 
 // display preset workout
 function setPresets(i) {
+   
+  // if no preset is chosen, don't do anything
+  if (i == 3) {
+    return;
+  } // if
+  
   const presets = [
     { 
       timerName: "1-to-3",
@@ -528,24 +524,15 @@ function setPresets(i) {
     },
   ];
   
-  if (i == 3) {
-    return;
-  } // if
-  
+  // graphically set presets
  for (let val in presets[i]) {
    document.getElementById(val).value = presets[i][val];
-   console.log(val);
  } // for
+  
+  // clear any previous user values
   workoutNames = {};
   workoutTimes = {};
+  
+  // clear list of custom intervals
   document.getElementById("removeBody").innerHTML = "";
 } // setPresets
-
-function playSound(value) {
-  
-} // playSound
-
-
-// nicer workout screen 
-// nicer workout finish screen
-// validate HTML and CSS
