@@ -7,28 +7,25 @@
     
     <meta name="description" content="HIIT Interval Timer for workouts">    
     <meta name="theme-color" content="#FFFFFF"/>
-    <meta http-equiv="Cache-control" content="no-cache">
     
     <link rel="manifest" href="manifest.json" />
     <link rel="shortcut icon" type="image/png" href="images/icons/192.png"/>
     <link rel="apple-touch-icon" href="images/icons/192.png">
     
-    <title>HIIT Training</title>
+    <title>HIIT Workouts</title>
     
     <link rel="stylesheet" href="style.css" />
     <script src="script.js" defer></script>
     
    <!-- bootstrap -->
-   <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css" as="style" onload="this.onload=null;this.rel='stylesheet'"> 
    <link rel="preload" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0/dist/css/bootstrap.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    
-   <script src="https://code.jquery.com/jquery-3.6.0.min.js" crossorigin="anonymous"></script>
+   <script src="https://code.jquery.com/jquery-3.6.0.min.js" crossorigin="anonymous" defer></script>
    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0/dist/js/bootstrap.bundle.min.js" defer></script>
 
   </head>
   <body>
     <div class="container" id="grid">
-      <h1 class="display-1 text-center">Workout</h1>
+      <h1 class="display-1 text-center" id="title">Workout!</h1>
       <p class="text-center">Create and run a HIIT interval timer! The preset options in the menu below are just a small sample of possible workouts, 
         so feel free to experiment with your own customizations. All durations are in <b>seconds</b>.</p>
       <div class="row py-3">
@@ -40,95 +37,95 @@
                 <option value="2">2-to-1</option>
                 <option value="3" selected>None</option>
               </select>
-              <label for="presets">Presets</label>
+              <label class="labels" for="presets">Presets</label>
             </div>
         </div>
         <div class="col mt-2 mb-2">
         <div class="form-floating">
-            <select id="sound" onchange="playSound(this.value)" class="form-select form-control" aria-label="sound">
+            <select id="sound" onchange="if (this.value < 3) {sounds[this.value].playbackRate = 2;sounds[this.value].play();}" class="form-select form-control" aria-label="sound">
               <option value="0">Alarm</option>
               <option value="1">Chime</option>
               <option value="2">Bell</option>
-              <option value="3">None</option>
+              <option value="3" selected>None</option>
             </select>
-            <label for="sound">Sound</label>
+            <label class="labels" for="sound">Sound</label>
           </div>
         </div>
       </div>
       <div class="row py-3">
         <div class="form-floating mt-4 mb-4">
           <input type="text" class="form-control" id="timerName" placeholder="My Timer">
-          <label for="timerName">Timer Name</label>
+          <label class="labels" for="timerName">Timer Name</label>
         </div>
 
         <div class="form-floating mt-4 mb-4">
-          <input class="form-control maininput" type="number" id="rounds" name="rounds" min="1" max="50" placeholder="5">
-          <label for="rounds">Rounds</label>
+          <input class="form-control maininput" type="number" id="rounds" name="rounds" min="1" max="9999" placeholder="5">
+          <label class="labels" for="rounds">Rounds</label>
         </div>
         
         <div class="form-floating mt-4 mb-4">
-          <input class="form-control maininput" type="number" placeholder="30" id="countdown" name="countdown" min="1" max="300">
-          <label for="countdown">Countdown to begin</label>
+          <input class="form-control maininput" type="number" placeholder="30" id="countdown" name="countdown" min="1" max="9999">
+          <label class="labels" for="countdown">Countdown to begin</label>
         </div>
       </div>
       
       <div class="row py-3">
         <div class="col mt-2 mb-2" id="h-intensity">
-          <h1>High Intensity</h1>
+          <h2 id="highTitle">High Intensity</h2>
           <div class="form-floating mt-4 mb-4">
-            <input class="form-control maininput" type="number" placeholder="30" id="highDuration" name="highIntensityDuration" min="1" max="">
-            <label for="highDuration">Duration</label>
+            <input class="form-control maininput" type="number" placeholder="30" id="highDuration" name="highIntensityDuration" min="1" max="9999">
+            <label class="labels" for="highDuration">Duration</label>
           </div>
           
           <div class="form-floating mt-4 mb-4">
             <input type="text" class="form-control" id="highName" placeholder="High Intensity">
-            <label for="highName">Name</label>
+            <label class="labels" for="highName">Name</label>
           </div>
         </div>
         <div class="col mt-2 mb-2" id="c-intensity">
-          <h1>Low Intensity</h1>
+          <h2>Low Intensity</h2>
           <div class="form-floating mt-4 mb-4">
-            <input class="form-control maininput" type="number" placeholder="30" id="lowDuration" name="LowIntensityDuration" min="1" max="">
-            <label for="lowDuration">Duration</label>
+            <input class="form-control maininput" type="number" placeholder="30" id="lowDuration" name="LowIntensityDuration" min="1" max="9999">
+            <label for="lowDuration" class="labels">Duration</label>
           </div>
           
           <div class="form-floating mt-4 mb-4">
             <input type="text" class="form-control" id="lowName" placeholder="Low Intensity">
-            <label for="lowName">Name</label>
+            <label class="labels" for="lowName">Name</label>
           </div>
         </div>
       </div>
       
       <div class="row py-3">
         <div class="col mt-2 mb-2" >
-          <button onclick="calculateWorkout(document.getElementById('addProgress'))" type="button" class="btn btn-lg" data-bs-toggle="modal" data-bs-target="#addModal">Add custom interval</button>
+          <button onclick="calculateWorkout(document.getElementById('addProgress'))" type="button" class="btn btn-lg" data-bs-toggle="modal" data-bs-target="#addModal">Create a custom interval</button>
         </div>
         <div class="col mt-2 mb-2" >
-          <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#removeModal">Remove custom intervals</button>
+          <button type="button" class="btn btn-lg btn-danger" data-bs-toggle="modal" data-bs-target="#removeModal">Remove custom intervals</button>
         </div>
       </div>
        <div class="row py-3">
         <div class="col mt-2 mb-2" >
-          <input class="form-check-input" type="checkbox" value="" id="warmup" onclick="showDuration(this, 'warmupCont')" checked>
+          <input class="form-check-input checks" type="checkbox" value="" id="warmup" onclick="showDuration(this, 'warmupCont')" checked>
           <label class="form-check-label" for="warmup">Include warm-up</label>
           <div class="form-floating mt-1" id="warmupCont">
-            <input class="form-control" type="number" placeholder="30" id="warmupDuration" name="warmupDuration" min="1" max="">
-            <label for="warmupDuration">Duration</label>
+            <input class="form-control" type="number" placeholder="30" id="warmupDuration" name="warmupDuration" min="1" max="9999">
+            <label class="labels" for="warmupDuration">Duration</label>
           </div>
         </div>
         <div class="col mt-2 mb-2" >
           <input class="form-check-input" type="checkbox" value="" id="cooldown" onclick="showDuration(this, 'cooldownCont')" checked>
           <label class="form-check-label" for="cooldown">Include cooldown</label>
           <div class="form-floating mt-1" id="cooldownCont">
-            <input class="form-control" type="number" placeholder="30" id="cooldownDuration" name="cooldownDuration" min="1" max="">
-            <label for="cooldownDuration">Duration</label>
+            <input class="form-control" type="number" placeholder="30" id="cooldownDuration" name="cooldownDuration" min="1" max="9999">
+            <label class="labels" for="cooldownDuration">Duration</label>
           </div>
         </div>
       </div>
       
       <div class="row py-3">
         <div class="col mt-2 mb-2">
-          <label id="forPreview" for="preview"><b>Total time: </b><br>Hover over or click the intervals below to view their details</label>
+          <label id="forPreview"><b>Total time: </b><br>Hover over or click the intervals below to view their details</label>
            <div id="preview" class="progress">
             </div>
         </div>
@@ -136,11 +133,11 @@
       
       <div class="row py-3">
         <div id="alert">
-          Please fill out every number field before beginning your workout
+          Please fill out every duration field before beginning your workout
           <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
         </div>
-        
-        <button class="btn btn-success" onclick="beginTimer()">Begin Workout</button>
+
+          <button class="btn btn-success" id="begin" onclick="beginTimer()">Begin Workout</button>
       </div>
     </div>
     
@@ -154,27 +151,28 @@
           <div class="modal-body">
             <div class="form-floating mt-4 mb-4">
               <input type="text" class="form-control" id="newName" placeholder="High Intensity">
-              <label for="newName">Name</label>
+              <label class="labels" for="newName">Name</label>
             </div>
             
             <div class="form-floating mt-4 mb-4">
-              <input class="form-control" type="number" placeholder="30" id="newDuration" name="customIntervalDuration" min="1" max="">
-              <label for="newDuration">Duration</label>
+              <input class="form-control" type="number" placeholder="30" id="newDuration" name="customIntervalDuration" min="1" max="9999">
+              <label class="labels" for="newDuration">Duration</label>
             </div>
-            <div id="draggable"><span id="start">Start</span></div>
+            <div id="draggable"><span id="start">Position</span></div>
             <div id="addProgress" class="progress">
               
             </div>
+            <br><br>
           </div> <!-- modal-body -->
           <div class="modal-footer">
-            <button onclick="addCustom()" type="button" class="btn btn-primary" data-bs-dismiss="modal">Save</button>
+            <button id="save" onclick="addCustom()" type="button" class="btn btn-lg" data-bs-dismiss="modal">Save</button>
           </div>
         </div>
       </div>
     </div>
     
     
-    <div class="modal fade" id="removeModal" tabindex="-1" aria-labelledby="" aria-hidden="true">
+    <div class="modal fade" id="removeModal" tabindex="-1" aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
@@ -185,8 +183,8 @@
             
           </div> <!-- modal-body -->
           <div class="modal-footer">
-            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="removeCustom()">Delete selected</button>
-            <button type="button" class="btn btn-primary" data-bs-dismiss="modal" onclick="deleteAll()">Delete all</button>
+            <button type="button" class="btn btn-lg btn-danger deletes" data-bs-dismiss="modal" onclick="removeCustom()">Delete selected</button>
+            <button type="button" class="btn btn-lg btn-danger deletes" data-bs-dismiss="modal" onclick="deleteAll()">Delete all</button>
           </div>
         </div>
       </div>
