@@ -1,3 +1,7 @@
+/*-------------------------------------------
+      STYLING FOR WORKOUT PLANNING SCREEN
+--------------------------------------------*/
+
 .col {
 text-align: center;
 }
@@ -9,18 +13,28 @@ text-align: center;
   border: 1px solid #A8A8A8 !important;
 }
 
+#title {
+  color: #198754;
+}
+
 #draggable {
   position: absolute;
   z-index: 100;
-  width: 20px;
-  height: 60px;
-  background-color: #A8A8A8;
+  width: 10px;
+  height: 40px;
+  border-radius: 10%;
+  background-color: rgba(200, 200 ,200 ,0.9);
   user-select: none; 
 }
 
 #start {
   position: relative;
-  left: -10px;
+  top: 45px;
+  left: -30px;
+  background-color: #6f42c1;
+  padding: 5px;
+  border-radius: 10%;
+  color: white;
   font-size: 120%;
 }
 
@@ -28,8 +42,17 @@ text-align: center;
   cursor: pointer;
 }
 
-#h-intensity, #c-intensity {
-   border: 1px dashed #A8A8A8;
+#h-intensity {
+  font-size: 95%;
+} 
+
+#c-intensity {
+  font-size: 95%;
+}
+
+.labels {
+  color: #6f42c1;
+  font-style: italic;
 }
 
 button[data-bs-target="#addModal"] {
@@ -38,16 +61,31 @@ button[data-bs-target="#addModal"] {
 }
 
 button[data-bs-target="#addModal"]:hover {
-  background-color: #59359a;
+  filter: brightness(0.9);
   color: white;
 }
 
 button[data-bs-target="#removeModal"] {
-  
+  color: white;
 }
 
 button[data-bs-target="#removeModal"]:hover {
-  
+  filter: brightness(0.9);
+  color: white;
+}
+
+#save {
+  background-color: #198754;
+  color: white;
+}
+
+.deletes {
+  color: white !important;
+}
+
+#save:hover, .deletes:hover, #begin:hover {
+  filter: brightness(0.9);
+  color: white;
 }
 
 #warmupCont, #cooldownCont {
@@ -56,8 +94,13 @@ button[data-bs-target="#removeModal"]:hover {
 }
 
 .form-check-input:checked {
+    background-color: #6f42c1 !important;
+    border-color: #6f42c1 !important;
+}
+
+#cooldown:checked, #warmup:checked {
     background-color: #f0ad4e !important;
-    border-color: #f0ad4e !important
+    border-color: #f0ad4e !important;
 }
 
 .form-check-input:focus, .btn:focus, .form-control:focus {
@@ -102,4 +145,81 @@ button[data-bs-target="#removeModal"]:hover {
 
 .modal-dialog {
   min-width: 80%;
+}
+
+#begin {
+  font-size: 150%;
+  color: white;
+  padding-top: 5% !important;
+  padding-bottom: 5% !important;
+}
+
+
+/*-------------------------------------------
+              TIMER STYLING
+--------------------------------------------*/
+
+#container {
+  background-color: rgba(200,200,200, 0.8);
+  margin: auto;
+  border-radius: 10%;
+  width: 90%;
+}
+
+#name {
+  margin-top: 3%;
+  padding-bottom: 7%;
+  padding-top: 7%;
+  font-weight: bold;
+}
+
+#timer {
+  width: 88%;
+  font-size: 10vh;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+#pause {
+  background-color: #A8A8A8;
+  color: black;
+  padding: 10px;
+}
+
+#pause:hover {
+  filter: brightness(0.9);
+  color: black;
+}
+
+#congrats {
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 5px;
+  font-size: 10vw;
+  text-align: center; 
+  color: #198754;
+}
+
+#finished {
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+  font-size: 175%;
+  line-height: 0.7;
+  padding-bottom: 50px;
+}
+
+#newWorkout {
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+ background-color: #198754;
+  padding: 10px;
+  color: white;
+}
+
+#newWorkout:hover {
+  filter: brightness(0.9);
+  color: white;
 }
