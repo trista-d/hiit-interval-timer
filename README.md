@@ -1,6 +1,6 @@
 # HIIT Interval Timer
 
-![Hiit Timer](hiit-cover.png)
+![Hiit Timer](hiit_cover.png)
 
 Assgnment for a high school course (web develoment 12)
 - progressive web app written with HTML, CSS, and JavaSript
